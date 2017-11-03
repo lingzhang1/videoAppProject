@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+        <link href="css/app.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	<!--
+    	描述：状态栏
+    -->
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-icon mui-icon-bars mui-pull-left mui-plus-visible"></a>
+		<h1 class="mui-title">视频列表</h1>
+
+	</header>
+	<div class="mui-content">
+		<!--
+        	描述：搜索框设计
+        -->
+		<div class="mui-input-row mui-search">
+			<input type="search" class="mui-input-clear" placeholder="" data-input-clear="1" data-input-search="1"><span class="mui-icon mui-icon-clear mui-hidden"></span><span class="mui-placeholder"><span class="mui-icon mui-icon-search"></span><span></span></span>
+		</div>
+
+		<!--
+        	描述：图文列表带有右边箭头的
+        -->
+		<ul id="listul" class="mui-table-view mui-table-view-chevron">
+
+
+				<!--<li class="mui-table-view-cell mui-media">
+					<a href="play.html?vid=3" class="mui-navigate-right">
+						<img class="mui-media-object mui-pull-left" src="../images/cbd.jpg">
+						<div class="mui-media-body">
+							CBD
+							<p class="mui-ellipsis">烤炉模式的城，到黄昏，如同打翻的调色盘一般.</p>
+						</div>
+					</a>
+				</li>-->
+
+			</ul>
+	</div>
+</body>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.tmpl.min.js"></script>
+<script id="list" type="text/x-jquery-tmpl">
+	{{each(i,videoinfo) message}}
+	<li class="mui-table-view-cell mui-media">
+		<a href="play.html?vid=${videoinfo.vid}" class="mui-navigate-right">
+			<img class="mui-media-object mui-pull-left" src="${videoinfo.vimg}">
+			<div class="mui-media-body">
+				${videoinfo.vtitle}
+				<p class="mui-ellipsis">${videoinfo.vsummary}</p>
+			</div>
+		</a>
+	</li>
+	 {{/each}}
+</script>
+	<script>
+	$(function(){
+		//页面加载完毕再异步请求数据
+		getvideosByAjax();
+	});
+
+		function getvideosByAjax()
+		{
+			//1.0 发起的url
+			var url = 'http://cz02.ittun.com/api/getvideos';
+			//2.0 $.getJSON(url,向服务器传入的参数,成功的回调函数) ,
+			$.getJSON(url,null,function(data){
+				if(data.status != 0) //失败
+				{
+					alert(data.message);
+					return;
+				}
+
+				//3.0 正常的逻辑处理
+				var resHtml = $("#list").tmpl(data);//根据魔板结合数组生成最终的html代码
+				$("#listul").html(resHtml);  //把html代码填充到id=listul中的ul标签中
+			});
+		}
+
+	</script>
+</html>
